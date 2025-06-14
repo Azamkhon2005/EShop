@@ -1,0 +1,87 @@
+services:
+  # --- База данных ---
+  postgres_db:
+    image: postgres:15
+    container_name: eshop_postgres_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - eshop_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U youruser"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - eshop_network
+
+  rabbitmq_server:
+    image: rabbitmq:3-management
+    container_name: eshop_rabbitmq_server
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - eshop_network
+
+  # --- Payments Service ---
+  payments-service:
+    build:
+      context: .
+      dockerfile: PaymentsService/Dockerfile
+    container_name: eshop_payments_service
+    ports:
+      - "8081:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__PaymentDb=Host=postgres_db;Port=5432;Database=payments_db;Username=postgres;Password=postgres_password;
+      - RabbitMQ__Host=rabbitmq_server
+      # - ASPNETCORE_URLS=http://+:8080
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+      rabbitmq_server:
+        condition: service_healthy
+    restart: on-failure
+    networks:
+      - eshop_network
+
+  # --- Orders Service ---
+  orders-service:
+    build:
+      context: .
+      dockerfile: OrdersService/Dockerfile
+    container_name: eshop_orders_service
+    ports:
+      - "8082:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__OrderDb=Host=postgres_db;Port=5432;Database=orders_db;Username=postgres;Password=postgres_password;
+      - RabbitMQ__Host=rabbitmq_server
+      # - ASPNETCORE_URLS=http://+:8080
+    depends_on:
+      postgres_db:
+        condition: service_healthy
+      rabbitmq_server:
+        condition: service_healthy
+    restart: on-failure
+    networks:
+      - eshop_network
+
+volumes:
+  eshop_postgres_data:
+
+networks:
+  eshop_network:
+    driver: bridge

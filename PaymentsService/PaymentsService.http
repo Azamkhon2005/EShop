@@ -1,0 +1,6 @@
+@PaymentsService_HostAddress = http://localhost:5262
+
+GET {{PaymentsService_HostAddress}}/swagger/
+Accept: application/json
+
+###
