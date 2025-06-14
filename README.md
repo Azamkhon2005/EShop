@@ -70,8 +70,6 @@
     ```bash
     docker-compose up --build
     ```
-    *   Флаг `--build` необходим при первом запуске или если были внесены изменения в код сервисов или их Dockerfile.
-
 3._   **Доступ к сервисам:**
     *   **Payments Service API (Swagger):** `http://localhost:8081/index.html`
     *   **Orders Service API (Swagger):** `http://localhost:8082/index.html`
