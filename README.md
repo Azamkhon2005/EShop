@@ -72,8 +72,8 @@
     ```
 3._   **Доступ к сервисам:**
 
-    *   **Payments Service API (Swagger):** `http://localhost:8081/index.html`
+   **Payments Service API (Swagger):** `http://localhost:8081/index.html`
     
-    *   **Orders Service API (Swagger):** `http://localhost:8082/index.html`
+   **Orders Service API (Swagger):** `http://localhost:8082/index.html`
     
-    *   **RabbitMQ Management UI:** `http://localhost:15672` (логин/пароль по умолчанию: `guest`/`guest`)
+   **RabbitMQ Management UI:** `http://localhost:15672` (логин/пароль по умолчанию: `guest`/`guest`)
