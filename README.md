@@ -71,6 +71,7 @@
     docker-compose up --build
     ```
 3._   **Доступ к сервисам:**
+
     *   **Payments Service API (Swagger):** `http://localhost:8081/index.html`
     
     *   **Orders Service API (Swagger):** `http://localhost:8082/index.html`
